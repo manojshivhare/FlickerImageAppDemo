@@ -2,7 +2,7 @@
 //  SceneDelegate.swift
 //  FlickerImageApp
 //
-//  Created by Manoj Shivhare on 01/01/20.
+//  Created by Manoj Shivhare on 14/05/20.
 //  Copyright © 2020 Manoj Shivhare. All rights reserved.
 //
 
@@ -46,6 +46,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
+        CoreDataStore.saveContext()
     }
 
 

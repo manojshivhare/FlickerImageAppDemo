@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		374AB711246D133D0051C130 /* CoreDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 374AB710246D133D0051C130 /* CoreDataStore.swift */; };
+		374AB715246D13800051C130 /* FlickerImageApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 374AB713246D13800051C130 /* FlickerImageApp.xcdatamodeld */; };
 		37C6539E23BCD13A00565026 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C6539D23BCD13A00565026 /* AppDelegate.swift */; };
 		37C653A223BCD13A00565026 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C653A123BCD13A00565026 /* ViewController.swift */; };
 		37C653A523BCD13A00565026 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 37C653A323BCD13A00565026 /* Main.storyboard */; };
@@ -20,6 +22,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		374AB710246D133D0051C130 /* CoreDataStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStore.swift; sourceTree = "<group>"; };
+		374AB714246D13800051C130 /* FlickerImageApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FlickerImageApp.xcdatamodel; sourceTree = "<group>"; };
 		37C6539A23BCD13A00565026 /* FlickerImageApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlickerImageApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		37C6539D23BCD13A00565026 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		37C653A123BCD13A00565026 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -45,6 +49,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		374AB712246D134F0051C130 /* CoreDataStore */ = {
+			isa = PBXGroup;
+			children = (
+				374AB710246D133D0051C130 /* CoreDataStore.swift */,
+			);
+			path = CoreDataStore;
+			sourceTree = "<group>";
+		};
 		37C6539123BCD13A00565026 = {
 			isa = PBXGroup;
 			children = (
@@ -64,6 +76,7 @@
 		37C6539C23BCD13A00565026 /* FlickerImageApp */ = {
 			isa = PBXGroup;
 			children = (
+				374AB712246D134F0051C130 /* CoreDataStore */,
 				37C653C323BCE57200565026 /* Controller */,
 				37C653BE23BCDB5000565026 /* ViewModel */,
 				37C653BD23BCDB4A00565026 /* View */,
@@ -75,6 +88,7 @@
 				37C653A623BCD13D00565026 /* Assets.xcassets */,
 				37C653A823BCD13D00565026 /* LaunchScreen.storyboard */,
 				37C653AB23BCD13D00565026 /* Info.plist */,
+				374AB713246D13800051C130 /* FlickerImageApp.xcdatamodeld */,
 			);
 			path = FlickerImageApp;
 			sourceTree = "<group>";
@@ -206,12 +220,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				374AB715246D13800051C130 /* FlickerImageApp.xcdatamodeld in Sources */,
 				37C653C023BCDBA600565026 /* PictureModel.swift in Sources */,
 				37C653A223BCD13A00565026 /* ViewController.swift in Sources */,
 				37C653B423BCD54300565026 /* PictureCollectionViewCell.swift in Sources */,
 				37C653B923BCDAD300565026 /* NetworkManager.swift in Sources */,
 				37C6539E23BCD13A00565026 /* AppDelegate.swift in Sources */,
 				37C653B223BCD4B400565026 /* SceneDelegate.swift in Sources */,
+				374AB711246D133D0051C130 /* CoreDataStore.swift in Sources */,
 				37C653C223BCDC7800565026 /* PictureViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -412,6 +428,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		374AB713246D13800051C130 /* FlickerImageApp.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				374AB714246D13800051C130 /* FlickerImageApp.xcdatamodel */,
+			);
+			currentVersion = 374AB714246D13800051C130 /* FlickerImageApp.xcdatamodel */;
+			path = FlickerImageApp.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 37C6539223BCD13A00565026 /* Project object */;
 }

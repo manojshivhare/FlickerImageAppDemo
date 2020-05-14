@@ -2,7 +2,7 @@
 //  NetworkManager.swift
 //  Go-JekAssesmentTest
 //
-//  Created by Manoj Shivhare on 20/07/19.
+//  Created by Manoj Shivhare on 14/05/20.
 //  Copyright © 2019 Droom. All rights reserved.
 //
 
@@ -22,9 +22,9 @@ struct API {
      static let baseURL = "https://api.flickr.com/services/rest/?method=flickr.galleries.getPhotos&api_key=d8158e574d6b7daadd8032dd7e00db4c&gallery_id=66911286-72157647277042064&format=json&nojsoncallback=1"
 }
 
-struct ImageAPI {
-    static let clientID = "e623da2721c6b89f"
-}
+//struct ImageAPI {
+//    static let clientID = "e623da2721c6b89f"
+//}
 
 class ApiManager: NSObject {
    
