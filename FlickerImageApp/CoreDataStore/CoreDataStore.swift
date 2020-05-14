@@ -48,6 +48,20 @@ class CoreDataStore {
         return container
     }()
     
+    lazy var viewContext: NSManagedObjectContext = {
+        return CoreDataStore.getContext()
+    }()
+
+    lazy var cacheContext: NSManagedObjectContext = {
+        return CoreDataStore.persistentContainer.newBackgroundContext()
+    }()
+
+    lazy var updateContext: NSManagedObjectContext = {
+        let _updateContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        _updateContext.parent = self.viewContext
+        return _updateContext
+    }()
+    
     // MARK: - Core Data Saving support
     class func saveContext() {
         let context = self.getContext()
@@ -89,10 +103,10 @@ class CoreDataStore {
         var allData = [PhotoViewModel]()
         
         do {
-             let results = try self.getContext().fetch(all)
+            let results = try self.getContext().fetch(all)
             
             for data in results {
-                allData.append(PhotoViewModel(id: data.id!, owner: data.owner!, secret: data.secret!, server: data.server!, farm: Int(data.farm), title: data.title!, isPublic: Int(data.ispublic), isFriend: Int(data.isfriend), isFamily: Int(data.isfamily), isPrimary: Int(data.is_primary), hasComment: Int(data.has_comment)))
+                allData.append(PhotoViewModel(id: data.id!, owner: data.owner!, secret: data.secret!, server: data.server!, farm: Int(data.farm), title: data.title!, isPublic: Int(data.ispublic), isFriend: Int(data.isfriend), isFamily: Int(data.isfamily)))
             }
             
         } catch  {

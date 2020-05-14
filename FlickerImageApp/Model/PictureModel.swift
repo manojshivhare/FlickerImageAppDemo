@@ -14,10 +14,6 @@ struct PictureModel:Codable {
 }
 
 struct Pictures :Codable {
-    var page: Int?
-    var pages : Int?
-    var perpage : Int?
-    var total : Int?
     var photo : [PhotoModel]
 }
 
@@ -31,6 +27,4 @@ struct PhotoModel : Codable {
     var ispublic: Int?
     var isfriend: Int?
     var isfamily: Int?
-    var is_primary: Int?
-    var has_comment: Int?
 }

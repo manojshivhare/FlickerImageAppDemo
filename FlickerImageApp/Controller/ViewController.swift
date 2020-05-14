@@ -25,6 +25,8 @@ class ViewController: UIViewController,UICollectionViewDelegate,UICollectionView
     var newDataArr:[PhotoModel]? {
         didSet {
             CoreDataStore.deleteAllData()
+            // Save them to Core Data
+            CoreDataStore.saveContext()
             // Add the new spots to Core Data Context
             self.addNewDataToCoreData(self.newDataArr!)
             // Save them to Core Data
@@ -37,32 +39,49 @@ class ViewController: UIViewController,UICollectionViewDelegate,UICollectionView
     //MARK: Setup Data into main Array
     func setupDataFromCoreDataIntoLocalArr(){
         for data in newDataArr! {
-            pictureVM?.append(PhotoViewModel(id: data.id!, owner: data.owner!, secret: data.secret!, server: data.server!, farm: data.farm ?? 0, title: data.title!, isPublic: data.ispublic ?? 0, isFriend:data.isfriend ?? 0, isFamily: data.isfamily ?? 0, isPrimary: data.is_primary ?? 0, hasComment: data.has_comment ?? 0))
+            pictureVM?.append(PhotoViewModel(id: data.id!, owner: data.owner!, secret: data.secret!, server: data.server!, farm: data.farm ?? 0, title: data.title!, isPublic: data.ispublic ?? 0, isFriend:data.isfriend ?? 0, isFamily: data.isfamily ?? 0))
         }
-
         reloadCollectionView()
     }
     
+    //MARK: ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         picturesSearchBar.delegate = self
-        pictureVM = CoreDataStore.getAllDataFromStore()
-        if pictureVM!.count == 0 {
-            callServiceToGetData(urlStr: API.fullGalleryURL)
+        self.pictureVM = CoreDataStore.getAllDataFromStore()
+        if self.pictureVM!.count == 0 {
+            if !Reachability.isConnectedToNetwork(){
+                showAlertView(alert: "Alert!", message: "Internet not available")
+            }
+            else{
+                self.callServiceToGetData(urlStr: API.fullGalleryURL)
+            }
         }
         else{
-            reloadCollectionView()
+            self.reloadCollectionView()
         }
     }
     
     //MARK: Call Service To Get Data
     func callServiceToGetData(urlStr:String) {
         ApiManager.shared.getUserData(urlStr: urlStr, view: self.view) { (photoModel) in
-            print(photoModel)
-            self.newDataArr = photoModel
-            print(self.newDataArr as Any)
-            self.reloadCollectionView()
+            if photoModel!.count > 0{
+                self.newDataArr = photoModel
+                print(self.newDataArr as Any)
+                self.reloadCollectionView()
+            }
+            else{
+                self.showAlertView(alert: "Alert!", message: "No Data Found!")
+            }
         }
+    }
+    
+    //MARK: Show Alert View
+    func showAlertView(alert: String, message:String) {
+        let alert = UIAlertController(title: alert, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+       self.present(alert, animated: true, completion: nil)
     }
     
     //MARK: Reload CollectionView
@@ -75,12 +94,11 @@ class ViewController: UIViewController,UICollectionViewDelegate,UICollectionView
     
     //MARK: Add data into core data
     func addNewDataToCoreData(_ object: [PhotoModel]) {
-        
         for Obj in object {
             let entity = NSEntityDescription.entity(forEntityName: "Flicker", in: CoreDataStore
                 .getContext())
             let storeDic = NSManagedObject(entity: entity!, insertInto: CoreDataStore.getContext())
-    
+            
             // Set the data to the entity
             storeDic.setValue(Obj.id, forKey: "id")
             storeDic.setValue(Obj.owner, forKey: "owner")
@@ -91,10 +109,7 @@ class ViewController: UIViewController,UICollectionViewDelegate,UICollectionView
             storeDic.setValue(Obj.ispublic, forKey: "ispublic")
             storeDic.setValue(Obj.isfriend, forKey: "isfriend")
             storeDic.setValue(Obj.isfamily, forKey: "isfamily")
-            storeDic.setValue(Obj.is_primary, forKey: "is_primary")
-            storeDic.setValue(Obj.has_comment, forKey: "has_comment")
         }
-        
     }
     
     //MARK: Collection View Delegate and Data Source method
@@ -120,8 +135,12 @@ class ViewController: UIViewController,UICollectionViewDelegate,UICollectionView
             return
         }
         let fullSearchUrlStr = API.imageSearchURl + "&tags=\(searchBar.text!)"
-        
-        callServiceToGetData(urlStr:fullSearchUrlStr)
+        if !Reachability.isConnectedToNetwork(){
+           showAlertView(alert: "Alert!", message: "Internet not available")
+        }
+        else{
+           callServiceToGetData(urlStr:fullSearchUrlStr)
+        }
     }
 }
 
