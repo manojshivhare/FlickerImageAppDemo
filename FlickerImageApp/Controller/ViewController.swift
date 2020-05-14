@@ -37,7 +37,7 @@ class ViewController: UIViewController,UICollectionViewDelegate,UICollectionView
     //MARK: Setup Data into main Array
     func setupDataFromCoreDataIntoLocalArr(){
         for data in newDataArr! {
-            pictureVM?.append(PhotoViewModel(id: data.id, owner: data.owner, secret: data.secret, server: data.server, farm: Int(data.farm), title: data.title, isPublic: Int(data.ispublic), isFriend: Int(data.isfriend), isFamily: Int(data.isfamily), isPrimary: Int(data.is_primary), hasComment: Int(data.has_comment)))
+            pictureVM?.append(PhotoViewModel(id: data.id!, owner: data.owner!, secret: data.secret!, server: data.server!, farm: data.farm ?? 0, title: data.title!, isPublic: data.ispublic ?? 0, isFriend:data.isfriend ?? 0, isFamily: data.isfamily ?? 0, isPrimary: data.is_primary ?? 0, hasComment: data.has_comment ?? 0))
         }
 
         reloadCollectionView()
@@ -119,7 +119,7 @@ class ViewController: UIViewController,UICollectionViewDelegate,UICollectionView
         if searchBar.text?.count == 0 {
             return
         }
-        let fullSearchUrlStr = API.fullGalleryURL + "&tags=\(searchBar.text!)"
+        let fullSearchUrlStr = API.imageSearchURl + "&tags=\(searchBar.text!)"
         
         callServiceToGetData(urlStr:fullSearchUrlStr)
     }

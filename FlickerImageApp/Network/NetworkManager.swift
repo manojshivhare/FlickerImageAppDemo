@@ -30,7 +30,7 @@ class ApiManager: NSObject {
                 self.showAlertView(alert: "Alert!", message: error!.localizedDescription)
                 return
             }
-            let userArr = try? JSONDecoder().decode(PictureModel.self, from: userData).photos.photo
+            let userArr = try? JSONDecoder().decode(PictureModel.self, from: userData).photos?.photo
             complition(userArr!)
         }
         task.resume()
