@@ -9,7 +9,12 @@
 import UIKit
 import CoreData
 
-class ViewController: UIViewController,UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout{
+struct API {
+     static let fullGalleryURL = "https://api.flickr.com/services/rest/?method=flickr.galleries.getPhotos&api_key=d8158e574d6b7daadd8032dd7e00db4c&gallery_id=66911286-72157647277042064&format=json&nojsoncallback=1"
+    static let imageSearchURl = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=d8158e574d6b7daadd8032dd7e00db4c&format=json&nojsoncallback=1"
+}
+
+class ViewController: UIViewController,UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,UISearchBarDelegate{
     
     @IBOutlet weak var picturesSearchBar: UISearchBar!
     
@@ -29,9 +34,9 @@ class ViewController: UIViewController,UICollectionViewDelegate,UICollectionView
         }
     }
     
+    //MARK: Setup Data into main Array
     func setupDataFromCoreDataIntoLocalArr(){
         for data in newDataArr! {
-            print(data.id)
             pictureVM?.append(PhotoViewModel(id: data.id, owner: data.owner, secret: data.secret, server: data.server, farm: Int(data.farm), title: data.title, isPublic: Int(data.ispublic), isFriend: Int(data.isfriend), isFamily: Int(data.isfamily), isPrimary: Int(data.is_primary), hasComment: Int(data.has_comment)))
         }
 
@@ -40,18 +45,19 @@ class ViewController: UIViewController,UICollectionViewDelegate,UICollectionView
     
     override func viewDidLoad() {
         super.viewDidLoad()
-       pictureVM = CoreDataStore.getAllDataFromStore()
-       if pictureVM!.count == 0 {
-           callServiceToGetData()
-       }
-       else{
-           reloadCollectionView()
-       }
+        picturesSearchBar.delegate = self
+        pictureVM = CoreDataStore.getAllDataFromStore()
+        if pictureVM!.count == 0 {
+            callServiceToGetData(urlStr: API.fullGalleryURL)
+        }
+        else{
+            reloadCollectionView()
+        }
     }
     
     //MARK: Call Service To Get Data
-    func callServiceToGetData() {
-        ApiManager.shared.getUserData { (photoModel) in
+    func callServiceToGetData(urlStr:String) {
+        ApiManager.shared.getUserData(urlStr: urlStr, view: self.view) { (photoModel) in
             print(photoModel)
             self.newDataArr = photoModel
             print(self.newDataArr as Any)
@@ -107,5 +113,15 @@ class ViewController: UIViewController,UICollectionViewDelegate,UICollectionView
         return indexPath.item == 0 ? CGSize(width: 0, height: 0) : CGSize(width: collectionView.bounds.size.width/2.1, height: collectionView.bounds.size.width/2.1)
     }
     
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+        if searchBar.text?.count == 0 {
+            return
+        }
+        let fullSearchUrlStr = API.fullGalleryURL + "&tags=\(searchBar.text!)"
+        
+        callServiceToGetData(urlStr:fullSearchUrlStr)
+    }
 }
 
