@@ -65,25 +65,45 @@ class CoreDataStore {
         }
     }
     
+    //MARK: Delete All Data From CoreData
+    class func deleteAllData() {
+         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Flicker")
+         fetchRequest.returnsObjectsAsFaults = false
+         do {
+             let results = try CoreDataStore.getContext().fetch(fetchRequest)
+             for object in results {
+                 guard let objectData = object as? NSManagedObject else {continue}
+                 CoreDataStore.getContext().delete(objectData)
+             }
+            
+         } catch let error {
+             print("Detele all data in error :", error)
+         }
+     }
+    
     /* Support for GRUD Operations */
     
     // GET / Fetch / Requests
-    class func getAllDataFromStore() -> Array<FlickerImage> {
-        let all = NSFetchRequest<FlickerImage>(entityName: "Octokit")
-        var allData = [FlickerImage]()
+    class func getAllDataFromStore() -> Array<PhotoViewModel> {
+        let all = NSFetchRequest<Flicker>(entityName: "Flicker")
+        var allData = [PhotoViewModel]()
         
         do {
-            let fetched = try CoreDataStore.getContext().fetch(all)
-            allData = fetched
-        } catch {
+             let results = try self.getContext().fetch(all)
+            
+            for data in results {
+                allData.append(PhotoViewModel(id: data.id!, owner: data.owner!, secret: data.secret!, server: data.server!, farm: Int(data.farm), title: data.title!, isPublic: Int(data.ispublic), isFriend: Int(data.isfriend), isFamily: Int(data.isfamily), isPrimary: Int(data.is_primary), hasComment: Int(data.has_comment)))
+            }
+            
+        } catch  {
             let nserror = error as NSError
             //TODO: Handle Error
             print(nserror.description)
         }
-        
+
         return allData
     }
-
+    
 }
 
 

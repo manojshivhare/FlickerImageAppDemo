@@ -32,7 +32,7 @@ class ApiManager: NSObject {
     let session = URLSession(configuration: .default)
     var request : NSMutableURLRequest = NSMutableURLRequest()
     
-    func getUserData(_ complition: @escaping (PictureModel?)->()) {
+    func getUserData(_ complition: @escaping ([PhotoModel])->()) {
         
         guard let url = URL(string: API.baseURL) else {return}
         request.url = url
@@ -44,8 +44,8 @@ class ApiManager: NSObject {
                 print(error?.localizedDescription ?? "Response error")
                 return
             }
-            let userDic = try? JSONDecoder().decode(PictureModel.self, from: userData)
-            complition(userDic)
+            let userArr = try? JSONDecoder().decode(PictureModel.self, from: userData).photos.photo
+            complition(userArr!)
         }
         task.resume()
     }

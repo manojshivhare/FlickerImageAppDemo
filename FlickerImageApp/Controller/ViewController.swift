@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class ViewController: UIViewController,UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout{
     
@@ -14,47 +15,96 @@ class ViewController: UIViewController,UICollectionViewDelegate,UICollectionView
     
     @IBOutlet weak var pictureCollectionView: UICollectionView!
     
-    var pictureVM = [PhotoViewModel]()
+    var pictureVM:[PhotoViewModel]?
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
-    
-    override func viewWillAppear(_ animated: Bool)  {
-        super.viewWillAppear(animated)
-        ApiManager.shared.getUserData { (photoModel) in
-            print("%@",photoModel as Any)
-            self.pictureVM = (photoModel?.photos.photo.map({return PhotoViewModel(Photo: $0)}))!
-            //self.pictureVM = photoArr.map({return PhotoViewModel(Photo: $0)})
-//            for photo in photoArr! {
-//                self.pictureVM.append(photo)
-                print(self.pictureVM)
-//            }
-            DispatchQueue.main.async {
-                self.pictureCollectionView.delegate = self
-                self.pictureCollectionView.dataSource = self
-                self.pictureCollectionView.reloadData()
-            }
+    var newDataArr:[PhotoModel]? {
+        didSet {
+            CoreDataStore.deleteAllData()
+            // Add the new spots to Core Data Context
+            self.addNewDataToCoreData(self.newDataArr!)
+            // Save them to Core Data
+            CoreDataStore.saveContext()
+            //setup
+            self.setupDataFromCoreDataIntoLocalArr()
         }
     }
     
+    func setupDataFromCoreDataIntoLocalArr(){
+        for data in newDataArr! {
+            print(data.id)
+            pictureVM?.append(PhotoViewModel(id: data.id, owner: data.owner, secret: data.secret, server: data.server, farm: Int(data.farm), title: data.title, isPublic: Int(data.ispublic), isFriend: Int(data.isfriend), isFamily: Int(data.isfamily), isPrimary: Int(data.is_primary), hasComment: Int(data.has_comment)))
+        }
+
+        reloadCollectionView()
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+       pictureVM = CoreDataStore.getAllDataFromStore()
+       if pictureVM!.count == 0 {
+           callServiceToGetData()
+       }
+       else{
+           reloadCollectionView()
+       }
+    }
+    
+    //MARK: Call Service To Get Data
+    func callServiceToGetData() {
+        ApiManager.shared.getUserData { (photoModel) in
+            print(photoModel)
+            self.newDataArr = photoModel
+            print(self.newDataArr as Any)
+            self.reloadCollectionView()
+        }
+    }
+    
+    //MARK: Reload CollectionView
+    func reloadCollectionView() {
+        DispatchQueue.main.async {
+            self.pictureCollectionView.reloadData()
+        }
+    }
+    
+    
+    //MARK: Add data into core data
+    func addNewDataToCoreData(_ object: [PhotoModel]) {
+        
+        for Obj in object {
+            let entity = NSEntityDescription.entity(forEntityName: "Flicker", in: CoreDataStore
+                .getContext())
+            let storeDic = NSManagedObject(entity: entity!, insertInto: CoreDataStore.getContext())
+    
+            // Set the data to the entity
+            storeDic.setValue(Obj.id, forKey: "id")
+            storeDic.setValue(Obj.owner, forKey: "owner")
+            storeDic.setValue(Obj.secret, forKey: "secret")
+            storeDic.setValue(Obj.server, forKey: "server")
+            storeDic.setValue(Obj.farm, forKey: "farm")
+            storeDic.setValue(Obj.title, forKey: "title")
+            storeDic.setValue(Obj.ispublic, forKey: "ispublic")
+            storeDic.setValue(Obj.isfriend, forKey: "isfriend")
+            storeDic.setValue(Obj.isfamily, forKey: "isfamily")
+            storeDic.setValue(Obj.is_primary, forKey: "is_primary")
+            storeDic.setValue(Obj.has_comment, forKey: "has_comment")
+        }
+        
+    }
+    
+    //MARK: Collection View Delegate and Data Source method
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return pictureVM.count
+        return pictureVM?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "pictureCellIdentifier", for: indexPath as IndexPath) as! PictureCollectionViewCell
         
-        cell.pictureVM = pictureVM[indexPath.row]
+        cell.pictureM = pictureVM![indexPath.row]
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize{
         return indexPath.item == 0 ? CGSize(width: 0, height: 0) : CGSize(width: collectionView.bounds.size.width/2.1, height: collectionView.bounds.size.width/2.1)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0.0
     }
     
 }

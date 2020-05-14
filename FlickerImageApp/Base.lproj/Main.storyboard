@@ -63,6 +63,10 @@
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
+                                <connections>
+                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="ayE-WS-Z2c"/>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="nVY-RE-llo"/>
+                                </connections>
                             </collectionView>
                             <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="a0s-FL-mzK">
                                 <rect key="frame" x="0.0" y="44" width="320" height="44"/>
