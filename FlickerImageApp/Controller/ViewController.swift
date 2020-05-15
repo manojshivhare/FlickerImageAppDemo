@@ -39,16 +39,17 @@ class ViewController: UIViewController,UICollectionViewDelegate,UICollectionView
     //MARK: Setup Data into main Array
     func setupDataFromCoreDataIntoLocalArr(){
         pictureVM?.removeAll()
-        for data in newDataArr! {
-            pictureVM?.append(PhotoViewModel(id: data.id!, owner: data.owner!, secret: data.secret!, server: data.server!, farm: data.farm ?? 0, title: data.title!, isPublic: data.ispublic ?? 0, isFriend:data.isfriend ?? 0, isFamily: data.isfamily ?? 0))
+        DispatchQueue.main.async {
+            for data in self.newDataArr! {
+                self.pictureVM?.append(PhotoViewModel(id: data.id!, owner: data.owner!, secret: data.secret!, server: data.server!, farm: data.farm ?? 0, title: data.title!, isPublic: data.ispublic ?? 0, isFriend:data.isfriend ?? 0, isFamily: data.isfamily ?? 0))
+            }
+            self.reloadCollectionView()
         }
-        reloadCollectionView()
     }
     
     //MARK: ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         picturesSearchBar.delegate = self
         self.pictureVM = CoreDataStore.getAllDataFromStore()
         if self.pictureVM!.count == 0 {
@@ -69,7 +70,7 @@ class ViewController: UIViewController,UICollectionViewDelegate,UICollectionView
         ApiManager.shared.getUserData(urlStr: urlStr, view: self.view) { (photoModel) in
             if photoModel!.count > 0{
                 self.newDataArr = photoModel
-                print(self.newDataArr as Any)
+                //print(self.newDataArr as Any)
                 self.reloadCollectionView()
             }
             else{
@@ -129,7 +130,7 @@ class ViewController: UIViewController,UICollectionViewDelegate,UICollectionView
         return indexPath.item == 0 ? CGSize(width: 0, height: 0) : CGSize(width: collectionView.bounds.size.width/2.1, height: collectionView.bounds.size.width/2.1)
     }
     
-    
+    //MARK: Call ImageSearch API
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
         if searchBar.text?.count == 0 {
