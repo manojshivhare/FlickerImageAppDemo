@@ -64,30 +64,19 @@ class CoreDataStore {
     
     // MARK: - Core Data Saving support
     class func saveContext() {
-        let moc = NSManagedObjectContext(concurrencyType:.mainQueueConcurrencyType)
-        let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        context.parent = moc
-
-        context.perform({
+        let context = self.getContext()
+        if context.hasChanges {
             do {
                 try context.save()
+                print("Data Saved to Context")
             } catch {
-                fatalError("Failure to save context: \(error)")
+                // Replace this implementation with code to handle the error appropriately.
+                // fatalError() causes the application to generate a crash log and terminate.
+                //You should not use this function in a shipping application, although it may be useful during development.
+                let nserror = error as NSError
+                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
             }
-        })
-//        let context = self.getContext()
-//        if context.hasChanges {
-//            do {
-//                try context.save()
-//                print("Data Saved to Context")
-//            } catch {
-//                // Replace this implementation with code to handle the error appropriately.
-//                // fatalError() causes the application to generate a crash log and terminate.
-//                //You should not use this function in a shipping application, although it may be useful during development.
-//                let nserror = error as NSError
-//                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
-//            }
-//        }
+        }
     }
     
     //MARK: Delete All Data From CoreData
