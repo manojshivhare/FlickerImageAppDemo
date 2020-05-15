@@ -38,6 +38,7 @@ class ViewController: UIViewController,UICollectionViewDelegate,UICollectionView
     
     //MARK: Setup Data into main Array
     func setupDataFromCoreDataIntoLocalArr(){
+        pictureVM?.removeAll()
         for data in newDataArr! {
             pictureVM?.append(PhotoViewModel(id: data.id!, owner: data.owner!, secret: data.secret!, server: data.server!, farm: data.farm ?? 0, title: data.title!, isPublic: data.ispublic ?? 0, isFriend:data.isfriend ?? 0, isFamily: data.isfamily ?? 0))
         }
